@@ -2,6 +2,7 @@ package com.examly.springapp.model;
 
 import jakarta.persistence.*;
 import lombok.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "users")
@@ -23,7 +24,13 @@ public class User {
     @Column(nullable=false)
     private String password;
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
-}
+    @Column(nullable=false)
+    private String email;   // ✅ Added to match DB
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable=false)
+    private Role role;
+
+    @Column(name = "created_at", updatable = false, insertable = false)
+    private LocalDateTime createdAt;  // ✅ Maps to DB default timestamp
+}

@@ -5,6 +5,8 @@ import lombok.*;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name = "customers")
 @Getter @Setter
@@ -20,6 +22,7 @@ public class Customer {
     private String phone;
     private String company;
 
-    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "customers")
+    @JsonManagedReference
     private List<Interaction> interactions;
 }

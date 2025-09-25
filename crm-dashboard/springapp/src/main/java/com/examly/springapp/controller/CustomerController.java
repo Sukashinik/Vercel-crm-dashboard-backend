@@ -32,6 +32,12 @@ public class CustomerController {
         return customerRepository.findById(id);
     }
 
+    // ✅ POST create a new customer
+    @PostMapping
+    public Customer createCustomer(@RequestBody Customer customer) {
+        return customerRepository.save(customer);
+    }
+
     // ✅ PUT update customer profile
     @PutMapping("/{id}")
     public Customer updateCustomer(@PathVariable Long id, @RequestBody Customer customerDetails) {
@@ -39,6 +45,7 @@ public class CustomerController {
             customer.setName(customerDetails.getName());
             customer.setEmail(customerDetails.getEmail());
             customer.setPhone(customerDetails.getPhone());
+            customer.setCompany(customerDetails.getCompany());
             return customerRepository.save(customer);
         }).orElseThrow(() -> new RuntimeException("Customer not found"));
     }
@@ -52,4 +59,3 @@ public class CustomerController {
         }).orElseThrow(() -> new RuntimeException("Customer not found"));
     }
 }
-
