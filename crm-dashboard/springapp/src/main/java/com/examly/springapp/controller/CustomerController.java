@@ -1,61 +1,49 @@
 package com.examly.springapp.controller;
 
 import com.examly.springapp.model.Customer;
-import com.examly.springapp.model.Interaction;
-import com.examly.springapp.repository.CustomerRepository;
-import com.examly.springapp.repository.InteractionRepository;
+import com.examly.springapp.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/customers")
 public class CustomerController {
 
     @Autowired
-    private CustomerRepository customerRepository;
+    private CustomerService customerService;
 
-    @Autowired
-    private InteractionRepository interactionRepository;
-
-    // ✅ GET all customers
     @GetMapping
     public List<Customer> getAllCustomers() {
-        return customerRepository.findAll();
+        return customerService.getAllCustomers();
     }
 
-    // ✅ GET customer by ID
     @GetMapping("/{id}")
-    public Optional<Customer> getCustomerById(@PathVariable Long id) {
-        return customerRepository.findById(id);
+    public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
+        try {
+            Customer customer = customerService.getCustomerById(id);
+            return ResponseEntity.ok(customer);
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
     }
 
-    // ✅ POST create a new customer
     @PostMapping
-    public Customer createCustomer(@RequestBody Customer customer) {
-        return customerRepository.save(customer);
+    public ResponseEntity<Customer> createCustomer(@RequestBody Customer customer) {
+        Customer savedCustomer = customerService.addCustomer(customer);
+        return ResponseEntity.ok(savedCustomer);
     }
 
-    // ✅ PUT update customer profile
     @PutMapping("/{id}")
     public Customer updateCustomer(@PathVariable Long id, @RequestBody Customer customerDetails) {
-        return customerRepository.findById(id).map(customer -> {
-            customer.setName(customerDetails.getName());
-            customer.setEmail(customerDetails.getEmail());
-            customer.setPhone(customerDetails.getPhone());
-            customer.setCompany(customerDetails.getCompany());
-            return customerRepository.save(customer);
-        }).orElseThrow(() -> new RuntimeException("Customer not found"));
+        return customerService.updateCustomer(id, customerDetails);
     }
 
-    // ✅ POST add interaction to customer
-    @PostMapping("/{id}/interactions")
-    public Interaction addInteraction(@PathVariable Long id, @RequestBody Interaction interaction) {
-        return customerRepository.findById(id).map(customer -> {
-            interaction.setCustomer(customer);
-            return interactionRepository.save(interaction);
-        }).orElseThrow(() -> new RuntimeException("Customer not found"));
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
+        customerService.deleteCustomer(id);
+        return ResponseEntity.ok().build();
     }
 }
