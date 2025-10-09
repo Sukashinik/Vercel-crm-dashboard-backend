@@ -9,7 +9,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name = "interactions")
-@Getter @Setter
+@Getter 
+@Setter
 @NoArgsConstructor @AllArgsConstructor @Builder
 public class Interaction {
 
