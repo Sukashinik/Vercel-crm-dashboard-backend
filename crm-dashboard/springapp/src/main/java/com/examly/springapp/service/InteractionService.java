@@ -7,12 +7,14 @@ import com.examly.springapp.repository.CustomerRepository;
 import com.examly.springapp.repository.InteractionRepository;
 import com.examly.springapp.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
 public class InteractionService {
+
     @Autowired
     private InteractionRepository interactionRepo;
 
@@ -22,18 +24,28 @@ public class InteractionService {
     @Autowired
     private UserRepository userRepo;
 
-    // ✅ Get all interactions
+    // Get all interactions (no pagination)
     public List<Interaction> getAllInteractions() {
         return interactionRepo.findAll();
     }
 
-    // ✅ Get interaction by ID
+    // Get all interactions with pagination & sorting
+    public Page<Interaction> getAllInteractionsPaginated(int page, int size, String sortBy, String direction) {
+        Sort sort = direction.equalsIgnoreCase("desc")
+                ? Sort.by(sortBy).descending()
+                : Sort.by(sortBy).ascending();
+
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return interactionRepo.findAll(pageable);
+    }
+
+    // Get interaction by ID
     public Interaction getInteractionById(Long id) {
         return interactionRepo.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Interaction not found with ID: " + id));
     }
 
-    // ✅ Log new interaction
+    // Log new interaction
     public Interaction logInteraction(Long customerId, Long userId, Interaction interaction) {
         Customer customer = customerRepo.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found with ID: " + customerId));
@@ -43,5 +55,13 @@ public class InteractionService {
         interaction.setCustomer(customer);
         interaction.setUser(user);
         return interactionRepo.save(interaction);
+    }
+
+    // Delete interaction by ID
+    public void deleteInteraction(Long id) {
+        if (!interactionRepo.existsById(id)) {
+            throw new IllegalArgumentException("Interaction not found");
+        }
+        interactionRepo.deleteById(id);
     }
 }

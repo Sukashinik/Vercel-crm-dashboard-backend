@@ -25,12 +25,12 @@ public class User {
     private String password;
 
     @Column(nullable=false)
-    private String email;   // ✅ Added to match DB
+    private String email;   
 
     @Enumerated(EnumType.STRING)
     @Column(nullable=false)
     private Role role;
 
     @Column(name = "created_at", updatable = false, insertable = false)
-    private LocalDateTime createdAt;  // ✅ Maps to DB default timestamp
+    private LocalDateTime createdAt;  
 }
