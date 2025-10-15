@@ -1,13 +1,12 @@
 package com.examly.springapp.model;
 
+import lombok.*;
+
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class AuthResponse {
     private String token;
-
-    public AuthResponse(String token) {
-        this.token = token;
-    }
-
-    public String getToken() {
-        return token;
-    }
+    private String role;
 }

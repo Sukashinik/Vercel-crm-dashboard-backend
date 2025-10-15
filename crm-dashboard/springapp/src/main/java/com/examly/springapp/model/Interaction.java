@@ -27,6 +27,7 @@ public class Interaction {
 
     private String notes;
 
+    @Builder.Default
     private LocalDateTime timestamp = LocalDateTime.now();
 
    @ManyToOne

@@ -1,18 +1,16 @@
 package com.examly.springapp.controller;
 
-import com.examly.springapp.model.AuthRequest;
-import com.examly.springapp.model.AuthResponse;
-import com.examly.springapp.model.User;
-import com.examly.springapp.security.AuthDetails;
-import com.examly.springapp.security.JwtUtil;
+import com.examly.springapp.model.*;
 import com.examly.springapp.repository.UserRepository;
+import com.examly.springapp.security.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 @RequestMapping("/api/auth")
 public class AuthController {
 
@@ -31,7 +29,6 @@ public class AuthController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    // Login API
     @PostMapping("/login")
     public AuthResponse login(@RequestBody AuthRequest request) {
         authenticationManager.authenticate(
@@ -39,16 +36,15 @@ public class AuthController {
         );
         final UserDetails userDetails = authDetails.loadUserByUsername(request.getUsername());
         final String token = jwtUtil.generateToken(userDetails.getUsername());
-        return new AuthResponse(token);
+        User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+        return new AuthResponse(token, user.getRole().name());
     }
 
-    // Register / Signup API
     @PostMapping("/signup")
     public String signup(@RequestBody User user) {
-        if(userRepository.existsByUsername(user.getUsername())){
+        if (userRepository.existsByUsername(user.getUsername())) {
             return "Username already taken!";
         }
-        // Encode password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return "User registered successfully!";

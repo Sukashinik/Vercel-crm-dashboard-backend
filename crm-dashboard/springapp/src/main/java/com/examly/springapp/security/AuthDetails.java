@@ -16,10 +16,12 @@ public class AuthDetails implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userRepo.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        // Spring expects "ROLE_" prefix internally
         return org.springframework.security.core.userdetails.User
                 .withUsername(user.getUsername())
-                .password(user.getPassword())  // must be encoded
-                .roles("USER")
+                .password(user.getPassword())
+                .roles(user.getRole().name()) // ADMIN / SALES_REP / ANALYST
                 .build();
     }
 }

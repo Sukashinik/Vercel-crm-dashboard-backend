@@ -14,13 +14,13 @@ public class UserController {
     @Autowired
     private UserRepository userRepository;
 
-    // ✅ GET all users
+    // GET all users
     @GetMapping
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
 
-    // ✅ POST create new user
+    // POST create new user
     @PostMapping
     public User createUser(@RequestBody User user) {
         return userRepository.save(user);
