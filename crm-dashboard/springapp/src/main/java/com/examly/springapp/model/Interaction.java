@@ -5,8 +5,6 @@ import lombok.*;
 
 import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
 @Entity
 @Table(name = "interactions")
 @Getter 
@@ -32,7 +30,6 @@ public class Interaction {
 
    @ManyToOne
    @JoinColumn(name = "customer_id")
-   @JsonBackReference
 private Customer customer;
 
     @ManyToOne

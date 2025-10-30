@@ -25,7 +25,13 @@ public class User {
     private String password;
 
     @Column(nullable=false)
-    private String email;   
+    private String email;
+
+    private String name;   
+    
+    private String phone;
+    
+    private String address;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable=false)

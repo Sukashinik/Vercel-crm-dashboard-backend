@@ -32,6 +32,10 @@ public class CustomerService {
         return customerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
     }
+    
+    public Customer findById(Long id) {
+        return customerRepository.findById(id).orElse(null);
+    }
 
     public Customer addCustomer(Customer customer) {
         return customerRepository.save(customer);
@@ -43,6 +47,12 @@ public class CustomerService {
         existingCustomer.setEmail(customerDetails.getEmail());
         existingCustomer.setPhone(customerDetails.getPhone());
         existingCustomer.setCompany(customerDetails.getCompany());
+        if (customerDetails.getStatus() != null) {
+            existingCustomer.setStatus(customerDetails.getStatus());
+        }
+        if (customerDetails.getLastContact() != null) {
+            existingCustomer.setLastContact(customerDetails.getLastContact());
+        }
         return customerRepository.save(existingCustomer);
     }
 

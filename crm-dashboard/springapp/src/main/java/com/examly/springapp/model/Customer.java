@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "customers")
@@ -18,6 +19,8 @@ public class Customer {
     private String email;
     private String phone;
     private String company;
+    private String status = "Active";
+    private LocalDateTime lastContact;
 
     public Customer() {
     }
@@ -27,6 +30,8 @@ public class Customer {
         this.email = email;
         this.phone = phone;
         this.company = company;
+        this.status = "Active";
+        this.lastContact = LocalDateTime.now();
     }
 
     public Long getId() {
@@ -67,5 +72,21 @@ public class Customer {
 
     public void setCompany(String company) {
         this.company = company;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getLastContact() {
+        return lastContact;
+    }
+
+    public void setLastContact(LocalDateTime lastContact) {
+        this.lastContact = lastContact;
     }
 }

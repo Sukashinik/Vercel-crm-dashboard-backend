@@ -28,7 +28,7 @@ public class InteractionService {
     public List<Interaction> getAllInteractions() {
         return interactionRepo.findAll();
     }
-
+    
     // Get all interactions with pagination & sorting
     public Page<Interaction> getAllInteractionsPaginated(int page, int size, String sortBy, String direction) {
         Sort sort = direction.equalsIgnoreCase("desc")
@@ -56,12 +56,45 @@ public class InteractionService {
         interaction.setUser(user);
         return interactionRepo.save(interaction);
     }
+    
+    // Update interaction
+    public Interaction updateInteraction(Long id, Interaction interactionDetails) {
+        Interaction existingInteraction = interactionRepo.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException("Interaction not found with ID: " + id));
+        
+        // Update fields
+        if (interactionDetails.getType() != null) {
+            existingInteraction.setType(interactionDetails.getType());
+        }
+        if (interactionDetails.getNotes() != null) {
+            existingInteraction.setNotes(interactionDetails.getNotes());
+        }
+        if (interactionDetails.getTimestamp() != null) {
+            existingInteraction.setTimestamp(interactionDetails.getTimestamp());
+        }
+        
+        return interactionRepo.save(existingInteraction);
+    }
 
     // Delete interaction by ID
     public void deleteInteraction(Long id) {
         if (!interactionRepo.existsById(id)) {
-            throw new IllegalArgumentException("Interaction not found");
+            throw new IllegalArgumentException("Interaction not found with ID: " + id);
         }
         interactionRepo.deleteById(id);
+    }
+
+    // Get interactions by customer ID
+    public List<Interaction> getInteractionsByCustomerId(Long customerId) {
+        Customer customer = customerRepo.findById(customerId)
+                .orElseThrow(() -> new IllegalArgumentException("Customer not found with ID: " + customerId));
+        return interactionRepo.findByCustomer(customer);
+    }
+
+    // Get interactions by user ID
+    public List<Interaction> getInteractionsByUserId(Long userId) {
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found with ID: " + userId));
+        return interactionRepo.findByUser(user);
     }
 }

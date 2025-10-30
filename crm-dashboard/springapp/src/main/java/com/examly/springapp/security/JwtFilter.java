@@ -40,8 +40,13 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = authDetails.loadUserByUsername(username);
             if (jwtUtil.validateToken(token)) {
+                String role = jwtUtil.extractRole(token);
+                UserDetails userDetails = org.springframework.security.core.userdetails.User
+                        .withUsername(username)
+                        .password("")
+                        .roles(role)
+                        .build();
                 UsernamePasswordAuthenticationToken authToken =
                         new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authToken);

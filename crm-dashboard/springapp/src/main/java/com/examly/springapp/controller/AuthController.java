@@ -35,8 +35,9 @@ public class AuthController {
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword())
         );
         final UserDetails userDetails = authDetails.loadUserByUsername(request.getUsername());
-        final String token = jwtUtil.generateToken(userDetails.getUsername());
         User user = userRepository.findByUsername(request.getUsername()).orElseThrow();
+        final String token = jwtUtil.generateToken(userDetails.getUsername(), user.getRole().name());
+        
         return new AuthResponse(token, user.getRole().name());
     }
 
@@ -45,8 +46,13 @@ public class AuthController {
         if (userRepository.existsByUsername(user.getUsername())) {
             return "Username already taken!";
         }
+        if (user.getRole() == null) {
+            user.setRole(User.Role.SALES_REP); // Default role
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return "User registered successfully!";
     }
+
+
 }
